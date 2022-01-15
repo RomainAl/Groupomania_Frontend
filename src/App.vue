@@ -1,55 +1,53 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+    <v-app-bar app dark>
+      <div class="d-flex align-center mr-2">
+        GROUPOMANIA
       </div>
 
-      <v-spacer></v-spacer>
+      <v-btn  v-if="currentUser" to="/profile" text>
+        {{ currentUser.username }}
+      </v-btn>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
+      <v-btn  v-if="currentUser" to="/subjects" text>
+        Forum
+      </v-btn>
+
+      <v-btn v-if="currentUser" to="/add"  text>
+        Add
+      </v-btn>
+
+      <v-btn v-if="!currentUser" to="/register"  text>
+        Sign Up
+      </v-btn>
+
+      <v-btn to="/login"  text>
+        Login
+      </v-btn>
+
+      <v-btn @click.prevent="logOut" text>
+        LogOut
       </v-btn>
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-
 export default {
-  name: 'App',
-
-  data: () => ({
-    //
-  }),
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
+  },
+  methods: {
+    logOut() {
+      this.$store.dispatch('auth/logout');
+      this.$router.push('/login');
+    }
+  }
 };
 </script>
