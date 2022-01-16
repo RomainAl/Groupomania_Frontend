@@ -81,7 +81,6 @@
             v-model="comment.text"
             :rules="[(v) => !!v || 'Comment is required']"
             label="Comment"
-            required
           ></v-text-field>
           <v-icon @click="saveComment">mdi-send</v-icon>
         </v-form>
@@ -109,7 +108,6 @@ export default {
         subjectId: null,
         text: ""
       },
-      submitted: false,
     };
   },
   computed: {
@@ -136,7 +134,7 @@ export default {
         CommentDataService.update(this.comment.id, this.comment)
           .then((response) => {
             console.log(response.data);
-            this.message = "The subject was updated successfully!";
+            this.message = "The comment was updated successfully!";
             this.comment.id = null;
             this.comment.text = "";
             this.refreshSubject(this.currentSubject.id);
@@ -153,7 +151,6 @@ export default {
           .then((response) => {
             this.comment.id = response.data.id;
             console.log(response.data);
-            this.submitted = true;
             this.comment.id = null;
             this.comment.text = "";
             this.refreshSubject(this.currentSubject.id);

@@ -84,7 +84,6 @@ export default {
     return {
       valid: true,
       user: new User('', '', ''),
-      submitted: false,
       successful: false,
       message: '',
       showpassword: false,
@@ -112,30 +111,30 @@ export default {
       this.$router.push('/profile');
     }
   },
+  
   methods: {
 
     handleRegister() {
-      this.message = '';
-      this.submitted = true;
-      this.$refs.form.validate().then(isValid => {
-        if (isValid) {
+      if (this.$refs.form.validate()){
+        this.$store.dispatch('auth/register', this.user).then(
+          data => {
+            this.message = data.message;
+            this.successful = true;
+          },
+          error => {
+            this.message =
+              (error.response && error.response.data && error.response.data.message) ||
+              error.message ||
+              error.toString();
+            this.successful = false;
+          }
+        );
         
-            this.$store.dispatch('auth/register', this.user).then(
-              data => {
-                this.message = data.message;
-                this.successful = true;
-              },
-              error => {
-                this.message =
-                  (error.response && error.response.data && error.response.data.message) ||
-                  error.message ||
-                  error.toString();
-                this.successful = false;
-              }
-            );
-        }
+      } else {
 
-      });
+          this.message = "Incorrect inputs";
+
+      }
 
     }
   }

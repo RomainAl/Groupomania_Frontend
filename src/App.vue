@@ -2,7 +2,16 @@
   <v-app>
     <v-app-bar app dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title class="d-flex align-center mr-2">GROUPOMANIA</v-toolbar-title>  
+          <v-layout align-center justify-center>
+              <v-flex xs8 sm4>
+                <v-img
+                  src="./assets/groupomania-logo.png" 
+                  alt="groupomania-logo"
+                  contain
+                >
+                </v-img>
+              </v-flex>
+          </v-layout>
     </v-app-bar>
 
     <v-navigation-drawer 
@@ -11,6 +20,20 @@
       app
       height="100%"
     >
+      <v-list-item>
+        <v-list-item-title>
+            <v-img
+              src="./assets/groupomania-icon.png" 
+              alt="groupomania-icon"
+              contain
+              height="200px"
+              class="mr-30"
+            >
+            </v-img>
+        </v-list-item-title>
+      </v-list-item>
+
+      <v-divider></v-divider>
 
       <v-list
         dense
@@ -27,7 +50,7 @@
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>{{ currentUser.username }}</v-list-item-title>
+            <v-list-item-title >{{ currentUser.username }}</v-list-item-title>
           </v-list-item-content>
 
         </v-list-item>

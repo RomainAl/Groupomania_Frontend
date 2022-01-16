@@ -94,7 +94,7 @@ export default {
     },
     handleLogin() {
       this.loading = true;
-
+      if (this.$refs.form.validate()){
 
             if (this.user.username && this.user.password) {
               this.$store.dispatch('auth/login', this.user).then(
@@ -111,6 +111,11 @@ export default {
               );
             }
 
+      } else {
+
+          this.message = "Incorrect inputs";
+
+      }
     }
   }
 };
