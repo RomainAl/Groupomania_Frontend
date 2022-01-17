@@ -1,21 +1,17 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 const http = axios.create({
-  baseURL: "http://localhost:8080/api/comment",
+  baseURL: "http://localhost:8080/api/auth",
   headers: authHeader()
 });
 
-class CommentDataService {
+class SubjectDataService {
   getAll() {
     return http.get("/");
   }
 
   get(id) {
     return http.get(`/${id}`);
-  }
-
-  create(data) {
-    return http.post("/", data);
   }
 
   update(id, data) {
@@ -26,9 +22,9 @@ class CommentDataService {
     return http.delete(`/${id}`);
   }
 
-  deleteAll() {
-    return http.delete(`/`);
+  findByUsername(username) {
+    return http.get(`?username=${username}`);
   }
 }
 
-export default new CommentDataService();
+export default new SubjectDataService();

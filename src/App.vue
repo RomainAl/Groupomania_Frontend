@@ -1,9 +1,12 @@
 <template>
   <v-app>
     <v-app-bar app dark>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon 
+        v-if="!$vuetify.breakpoint.mdAndUp"
+        @click.stop="drawer = !drawer">
+      </v-app-bar-nav-icon>
           <v-layout align-center justify-center>
-              <v-flex xs8 sm4>
+              <v-flex xs8 sm4 md3 lg2>
                 <v-img
                   src="./assets/groupomania-logo.png" 
                   alt="groupomania-logo"
@@ -15,6 +18,7 @@
     </v-app-bar>
 
     <v-navigation-drawer 
+      :permanent="$vuetify.breakpoint.mdAndUp"
       v-model="drawer" 
       light
       app
@@ -43,7 +47,7 @@
         <v-list-item
           link
           v-if="currentUser" 
-          to="/profile" 
+          to="/profil" 
         >
           <v-list-item-icon>
             <v-icon>mdi-account</v-icon>
@@ -81,7 +85,7 @@
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>Add post</v-list-item-title>
+            <v-list-item-title>Create a new post</v-list-item-title>
           </v-list-item-content>
           
         </v-list-item>
@@ -133,11 +137,25 @@
           
         </v-list-item>
 
+        <v-divider></v-divider>
+
+        <v-list-item
+          v-if="currentUser&&(currentUser.role === 'admin')"
+          link
+          to="/users"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-account-search</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>User list</v-list-item-title>
+          </v-list-item-content>
+          
+        </v-list-item>
 
       </v-list>
     </v-navigation-drawer>
-
-    
 
     <v-content>
       <router-view />
@@ -151,11 +169,6 @@ export default {
     return {
       drawer: false,
       valid: true,
-      items: [
-          { title: 'Dashboard', icon: 'mdi-view-dashboard' },
-          { title: 'Photos', icon: 'mdi-image' },
-          { title: 'About', icon: 'mdi-help-box' },
-        ],
     }
   },
 
@@ -168,6 +181,7 @@ export default {
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
+      window.location.reload();
     }
   }
 };

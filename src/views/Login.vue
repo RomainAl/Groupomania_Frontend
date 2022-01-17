@@ -1,57 +1,49 @@
 <template>
-  <v-app id="inspire">
-    <v-content>
-        <v-container fluid fill-height>
-          <v-layout align-center justify-center>
-              <v-flex xs12 sm8 md4>
-                <v-card class="elevation-12">
-                    <v-toolbar dark color="primary">
-                      <v-toolbar-title>Login</v-toolbar-title>
-                    </v-toolbar>
-                    <v-card-text>
-                      <v-form
-                      ref="form"
-                      v-model="valid"
-                      lazy-validation>
-                        
-                        <v-text-field
-                          v-model="user.username"
-                          :rules="[rules.required, rules.counter, rules.minname]"
-                          label="Username"
-                          counter
-                          maxlength="20"
-                          clearable
-                        ></v-text-field>
+  <v-container fluid>
+      <v-card 
+        width="600"
+        class="mx-auto">
+          <v-toolbar dark color="primary">
+            <v-toolbar-title>Login</v-toolbar-title>
+          </v-toolbar>
+          <v-card-text>
+            <v-form
+            ref="form"
+            v-model="valid"
+            lazy-validation>
+              
+              <v-text-field
+                v-model="user.username"
+                :rules="[rules.required, rules.counter, rules.minname]"
+                label="Username"
+                maxlength="20"
+              ></v-text-field>
 
-                        <v-text-field
-                          v-model="user.password"
-                          :append-icon="showpassword ? 'mdi-eye' : 'mdi-eye-off'"
-                          :rules="[rules.required, rules.min]"
-                          :type="showpassword ? 'text' : 'password'"
-                          name="Password"
-                          label="Password"
-                          hint="At least 8 characters"
-                          counter
-                          @click:append="showpassword = !showpassword"
-                          clearable
-                        ></v-text-field>
+              <v-text-field
+                v-model="user.password"
+                :append-icon="showpassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :rules="[rules.required, rules.min]"
+                :type="showpassword ? 'text' : 'password'"
+                name="Password"
+                label="Password"
+                hint="At least 8 characters"
+                @click:append="showpassword = !showpassword"
+              ></v-text-field>
 
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn :disabled="!valid" @click="handleLogin" color="primary" to="/">Login</v-btn>
-                        </v-card-actions>
-                        
-                      </v-form>
-                    </v-card-text>
-                    <v-alert  type="error" v-if="message">
-                      {{message}}
-                    </v-alert>
-                </v-card>
-              </v-flex>
-          </v-layout>
-        </v-container>
-    </v-content>
-  </v-app>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn :disabled="!valid" @click="handleLogin" color="primary" to="/">Login</v-btn>
+              </v-card-actions>
+              
+            </v-form>
+        </v-card-text>
+      
+        <v-alert  type="error" v-if="message">
+          {{message}}
+        </v-alert>
+          
+      </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -63,7 +55,6 @@ export default {
     return {
       valid: true,
       user: new User('', ''),
-      loading: false,
       message: '',
       showpassword: false,
       rules: {
@@ -85,24 +76,22 @@ export default {
   },
   created() {
     if (this.loggedIn) {
-      this.$router.push('/profile');
+      this.$router.push('/profil');
     }
   },
+ 
   methods: {
-    validate () {
-      this.$refs.form.validate()
-    },
+
     handleLogin() {
-      this.loading = true;
+      this.$refs.form.validate();
       if (this.$refs.form.validate()){
 
             if (this.user.username && this.user.password) {
               this.$store.dispatch('auth/login', this.user).then(
                 () => {
-                  this.$router.push('/profile');
+                  this.$router.push('/profil');
                 },
                 error => {
-                  this.loading = false;
                   this.message =
                     (error.response && error.response.data && error.response.data.message) ||
                     error.message ||

@@ -1,78 +1,71 @@
 <template>
-  <v-app id="inspire">
-    <v-content>
-        <v-container fluid fill-height>
-          <v-layout align-center justify-center>
-              <v-flex xs12 sm8 md4>
-                <v-card class="elevation-12">
-                    <v-toolbar dark color="primary">
-                      <v-toolbar-title>Sign up</v-toolbar-title>
-                    </v-toolbar>
-                    
-                    <v-card-text>
-                      <v-form 
-                      ref="form"
-                      v-model="valid"
-                      lazy-validation>
+  <v-container fluid>
+      <v-card 
+        width="600"
+        class="mx-auto">
+        
+        <v-toolbar dark color="primary">
+          <v-toolbar-title>Sign up</v-toolbar-title>
+        </v-toolbar>
+        
+        <v-card-text>
+          <v-form 
+          ref="form"
+          v-model="valid"
+          lazy-validation>
 
-                        <v-text-field
-                          v-model="user.username"
-                          :rules="[rules.required, rules.counter, rules.minname]"
-                          label="Username"
-                          counter
-                          maxlength="10"
-                          clearable
-                        ></v-text-field>
-                        
-                        <v-text-field
-                          v-model="user.email"
-                          :rules="[rules.required, rules.email]"
-                          label="Email"
-                          clearable
-                        ></v-text-field>
+            <v-text-field
+              v-model="user.username"
+              :rules="[rules.required, rules.counter, rules.minname]"
+              label="Username"
+              counter
+              maxlength="10"
+            ></v-text-field>
+            
+            <v-text-field
+              v-model="user.email"
+              :rules="[rules.required, rules.email]"
+              label="Email"
+            ></v-text-field>
 
-                        <v-text-field
-                          v-model="user.password"
-                          :append-icon="showpassword ? 'mdi-eye' : 'mdi-eye-off'"
-                          :rules="[rules.required, rules.min]"
-                          :type="showpassword ? 'text' : 'password'"
-                          name="Password"
-                          label="Password"
-                          hint="At least 8 characters"
-                          counter
-                          @click:append="showpassword = !showpassword"
-                          clearable
-                        ></v-text-field>
+            <v-text-field
+              v-model="user.password"
+              :append-icon="showpassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[rules.required, rules.min]"
+              :type="showpassword ? 'text' : 'password'"
+              name="Password"
+              label="Password"
+              hint="At least 8 characters"
+              counter
+              @click:append="showpassword = !showpassword"
+            ></v-text-field>
 
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn 
-                            :disabled="!valid"
-                            color="success"
-                            class="mr-4"
-                            @click="handleRegister">
-                              Sign Up
-                              </v-btn>
-                        </v-card-actions>
-                        
-                      </v-form>
-                    </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn 
+                :disabled="!valid"
+                color="primary"
+                class="mr-4"
+                @click="handleRegister">
+                  Sign Up
+                  </v-btn>
+            </v-card-actions>
+            
+          </v-form>
+        </v-card-text>
 
-                    <v-card-text v-if="message">
-                      <v-alert type="error" v-if="!successful">
-                        {{message}}
-                      </v-alert>
-                      <v-alert type="success" v-else>
-                        {{message}}
-                      </v-alert>
-                    </v-card-text>
+        <v-card-text v-if="message">
+          <v-alert type="error" v-if="!successful">
+            {{message}}
+          </v-alert>
+          <v-alert type="success" v-else>
+            {{message}}
+          </v-alert>
+        </v-card-text>
 
-                </v-card>
-              </v-flex>
-          </v-layout>
-        </v-container>
-    </v-content>
-  </v-app>
+    </v-card>
+
+  </v-container>
 </template>
 
 <script>
@@ -108,13 +101,14 @@ export default {
 
   mounted() {
     if (this.loggedIn) {
-      this.$router.push('/profile');
+      this.$router.push('/profil');
     }
   },
   
   methods: {
 
     handleRegister() {
+      this.$refs.form.validate();
       if (this.$refs.form.validate()){
         this.$store.dispatch('auth/register', this.user).then(
           data => {

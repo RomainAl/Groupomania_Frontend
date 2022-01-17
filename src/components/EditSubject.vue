@@ -1,63 +1,97 @@
 <template>
-  <div v-if="currentSubject" class="edit-form py-3">
-    <p class="headline">Edit Subject</p>
-
-    <v-form ref="form" lazy-validation>
-      <v-text-field
-        v-model="currentSubject.title"
-        :rules="[(v) => !!v || 'Title is required']"
-        label="Title"
-        required
-      ></v-text-field>
-
-      <v-text-field
-        v-model="currentSubject.description"
-        :rules="[(v) => !!v || 'Description is required']"
-        label="Description"
-        required
-      ></v-text-field>
-
-      <v-text-field
-        v-model="currentSubject.text"
-        :rules="[(v) => !!v || 'Text is required']"
-        label="Text"
-        required
-      ></v-text-field>
-
-      <label><strong>Status:</strong></label>
-      {{ currentSubject.published ? "Published" : "Pending" }}
-
-      <v-divider class="my-5"></v-divider>
-
-      <v-btn v-if="currentSubject.published"
-        @click="updatePublished(false)"
-        color="primary" small class="mr-2"
+<v-container fluid>
+    <v-card
+    width="600"
+    class="mx-auto"
+    v-if="currentSubject">
+      <v-toolbar
+        color="primary"
+        dark
+        flat
       >
-        UnPublish
-      </v-btn>
+        <v-btn 
+        small @click="showSubject(currentSubject.id)"
+        icon>
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
+        <v-card-title class="text-h6 font-weight-regular">
+          Edit {{currentSubject.title}}
+        </v-card-title>
+        <v-spacer></v-spacer>
+        <v-btn 
+        small @click="deleteSubject(currentSubject.id)"
+        color="white"
+        icon>
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+      </v-toolbar>
+        
+      <v-card-text>
 
-      <v-btn v-else
-        @click="updatePublished(true)"
-        color="primary" small class="mr-2"
-      >
-        Publish
-      </v-btn>
+        <v-form 
+        ref="form"
+        v-model="valid"
+        lazy-validation>
+          <v-text-field
+            v-model="currentSubject.title"
+            :rules="[(v) => !!v || 'Title is required']"
+            label="Title"
+            counter
+            maxlength="20"
+          ></v-text-field>
 
-      <v-btn color="error" small class="mr-2" @click="deleteSubject">
-        Delete
-      </v-btn>
+          <v-text-field
+            v-model="currentSubject.description"
+            :rules="[(v) => !!v || 'Description is required']"
+            label="Description"
+            counter
+            maxlength="50"
+          ></v-text-field>
 
-      <v-btn color="success" small @click="updateSubject">
-        Update
-      </v-btn>
-    </v-form>
+          <v-textarea
+            auto-grow
+            clearable
+            counter
+            v-model="currentSubject.text"
+            :rules="[(v) => !!v || 'Text is required']"
+            label="Text"
+            maxlength="255"
+          ></v-textarea>
 
-    <p class="mt-3">{{ message }}</p>
-  </div>
+          <label><strong>Status:</strong></label>
+          {{ currentSubject.published ? "Published" : "Pending" }}
 
-  <div v-else>
-    <p>Please click on a Subject...</p>
-  </div>
+          <v-divider class="my-5"></v-divider>
+
+          <v-btn color="secondary" small class="mr-2" @click="deleteSubject">
+            Delete
+          </v-btn>
+
+          <v-btn 
+          :disabled="!valid"
+          color="primary" 
+          small 
+          @click="updateSubject">
+            Update
+          </v-btn>
+        </v-form>
+
+      </v-card-text>
+      
+      <v-card-text v-if="message">
+        <v-alert type="error" v-if="!successful">
+          {{message}}
+        </v-alert>
+        <v-alert type="success" v-else>
+          {{message}}
+        </v-alert>
+      </v-card-text>
+
+    </v-card>
+    <v-card-text v-else>
+      <p>Please click on a Subject...</p>
+    </v-card-text>
+  </v-container>
 </template>
 
 <script>
@@ -67,7 +101,9 @@ export default {
   name: "edit-subject",
   data() {
     return {
+      valid: true,
       currentSubject: null,
+      successful: false,
       message: "",
     };
   },
@@ -83,33 +119,26 @@ export default {
         });
     },
 
-    updatePublished(status) {
-      var data = {
-        id: this.currentSubject.id,
-        title: this.currentSubject.title,
-        description: this.currentSubject.description,
-        published: status,
-      };
-
-      SubjectDataService.update(this.currentSubject.id, data)
-        .then((response) => {
-          this.currentSubject.published = status;
-          console.log(response.data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-
     updateSubject() {
-      SubjectDataService.update(this.currentSubject.id, this.currentSubject)
-        .then((response) => {
-          console.log(response.data);
-          this.message = "The subject was updated successfully!";
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      this.$refs.form.validate();
+      if (this.$refs.form.validate()){
+
+        SubjectDataService.update(this.currentSubject.id, this.currentSubject)
+          .then((response) => {
+            console.log(response.data);
+            this.message = "The subject was updated successfully!";
+            this.successful = true;
+          })
+          .catch((e) => {
+            console.log(e);
+            this.message = e.message;
+            this.successful = false;
+          });
+
+      } else {
+        this.successful = false;
+        this.message = "Incorrect inputs";
+      }
     },
 
     deleteSubject() {
@@ -121,6 +150,10 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+    },
+
+    showSubject(id) {
+      this.$router.push({ name: "show-subject", params: { id: id } });
     },
   },
   mounted() {

@@ -1,50 +1,88 @@
 <template>
-  <div class="submit-form mt-3 mx-auto">
-    <p class="headline">Add Subject</p>
-
-    <div v-if="!submitted">
-      <v-form ref="form" lazy-validation>
-        <v-text-field
-          v-model="subject.title"
-          :rules="[(v) => !!v || 'Title is required']"
-          label="Title"
-          required
-        ></v-text-field>
-
-        <v-text-field
-          v-model="subject.description"
-          :rules="[(v) => !!v || 'Description is required']"
-          label="Description"
-          required
-        ></v-text-field>
-        
-        <v-text-field
-          v-model="subject.text"
-          :rules="[(v) => !!v || 'Text is required']"
-          label="Text"
-          required
-        ></v-text-field>
-      </v-form>
-
-      <v-btn color="primary" class="mt-3" @click="saveSubject">Submit</v-btn>
-    </div>
-
-    <div v-else>
-      <v-card class="mx-auto">
-        <v-card-title>
-          Submitted successfully!
+  <v-container fluid>
+    <v-card
+    width="600"
+    class="mx-auto">
+      <v-toolbar
+        color="primary"
+        dark
+        flat
+      >
+        <v-btn 
+          small @click="newSubject()"
+          color="white"
+          icon>
+            <v-icon>mdi-plus</v-icon>
+        </v-btn>
+        <v-card-title class="text-h6 font-weight-regular">
+          Create a new post
         </v-card-title>
+        <v-spacer></v-spacer>
+      <v-btn 
+        small
+        v-if = "newSubjectId"
+        @click="showSubject(newSubjectId)"
+        color="white"
+        icon>
+          <v-icon>mdi-open-in-new</v-icon>
+      </v-btn>
+      </v-toolbar>
 
-        <v-card-subtitle>
-          Click the button to add new Subject.
-        </v-card-subtitle>
+      <v-card-text>
 
-        <v-card-actions>
-          <v-btn color="success" @click="newSubject">Add</v-btn>
-        </v-card-actions>
-      </v-card>
-    </div>
-  </div>
+        <v-form 
+          ref="form"
+          v-model="valid"
+          lazy-validation>
+          <v-text-field
+            v-model="subject.title"
+            :rules="[(v) => !!v || 'Title is required']"
+            label="Title"
+            counter
+            maxlength="20"
+          ></v-text-field>
+
+          <v-text-field
+            v-model="subject.description"
+            :rules="[(v) => !!v || 'Description is required']"
+            label="Description"
+            counter
+            maxlength="50"
+          ></v-text-field>
+
+          <v-textarea
+            auto-grow
+            clearable
+            counter
+            v-model="subject.text"
+            :rules="[(v) => !!v || 'Text is required']"
+            label="Text"
+          ></v-textarea>
+
+          <v-divider class="my-5"></v-divider>
+
+          <v-btn 
+          :disabled="!valid"
+          color="primary" 
+          small 
+          @click="saveSubject">
+            Create
+          </v-btn>
+
+        </v-form>
+      </v-card-text>
+      
+      <v-card-text v-if="message">
+        <v-alert type="error" v-if="!successful">
+          {{message}}
+        </v-alert>
+        <v-alert type="success" v-else>
+          {{message}}
+        </v-alert>
+      </v-card-text>
+
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -55,44 +93,58 @@ export default {
   data() {
     return {
       subject: {
-        id: null,
         title: "",
         description: "",
-        text: "",
-        published: false,
+        text: ""
       },
-      submitted: false,
+      successful: false,
+      valid: true,
+      message: '',
+      newSubjectId: 0
     };
   },
   methods: {
     saveSubject() {
-      var data = {
-        title: this.subject.title,
-        description: this.subject.description,
-        text: this.subject.text,
-      };
+      this.$refs.form.validate();
+      if (this.$refs.form.validate()){
+          var data = {
+            title: this.subject.title,
+            description: this.subject.description,
+            text: this.subject.text,
+          };
 
-      SubjectDataService.create(data)
-        .then((response) => {
-          this.subject.id = response.data.id;
-          console.log(response.data);
-          this.submitted = true;
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+          SubjectDataService.create(data)
+            .then((response) => {
+              console.log(response.data);
+              this.message = "The subject was updated successfully!";
+              this.newSubjectId = response.data.id;
+              this.successful = true;
+            })
+            .catch((e) => {
+              console.log(e);
+              this.message = e.message;
+              this.successful = false;
+            });
+
+      } else {
+        this.successful = false;
+        this.message = "Incorrect inputs";
+      }
+
     },
 
     newSubject() {
-      this.submitted = false;
       this.subject = {};
+      this.message ='';
+      this.$refs.form.resetValidation();
+    },
+
+    showSubject(id) {
+      this.$router.push({ name: "show-subject", params: { id: id } });
     },
   },
 };
 </script>
 
 <style>
-.submit-form {
-  max-width: 300px;
-}
 </style>

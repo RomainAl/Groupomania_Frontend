@@ -22,9 +22,9 @@ export const router = new Router({
       component: Register
     },
     {
-      path: '/profile',
-      name: 'profile',
-      component: () => import('./views/Profile.vue')
+      path: '/profil',
+      name: 'profil',
+      component: () => import('./views/Profil.vue')
     },
     {
       path: "/subjects",
@@ -33,9 +33,20 @@ export const router = new Router({
       component: () => import("./components/SubjectsList")
     },
     {
+      path: "/users",
+      alias: "/users",
+      name: "users",
+      component: () => import("./components/UsersList")
+    },
+    {
       path: "/editsubjects/:id",
       name: "edit-subject",
       component: () => import("./components/EditSubject")
+    },
+    {
+      path: "/editusers/:id",
+      name: "edit-user",
+      component: () => import("./components/EditUser")
     },
     {
       path: "/add",
