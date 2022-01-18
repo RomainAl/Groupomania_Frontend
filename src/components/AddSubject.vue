@@ -104,6 +104,7 @@ export default {
     };
   },
   methods: {
+    
     saveSubject() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()){

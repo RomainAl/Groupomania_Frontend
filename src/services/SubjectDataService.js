@@ -14,6 +14,25 @@ class SubjectDataService {
     return http.get(`/${id}`);
   }
 
+  // WORKING PROGRESS
+  createWithImage(file, data, onUploadProgress) {
+      let formData = new FormData();
+      let user = JSON.parse(localStorage.getItem('user'));
+
+      formData.append("file", file);
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      formData.append("text", data.text);
+
+      return http.post("/", formData, {
+        headers: {
+          'x-access-token': user.accessToken, 
+          "Content-Type": "multipart/form-data"
+        },
+        onUploadProgress
+      });
+  }
+
   create(data) {
     return http.post("/", data);
   }
