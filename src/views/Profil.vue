@@ -62,7 +62,7 @@
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title>{{currentUser.phonenumber}}</v-list-item-title>
+              <v-list-item-title>+33 (0) {{currentUser.phonenumber}}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
 

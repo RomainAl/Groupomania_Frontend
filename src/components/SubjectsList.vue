@@ -35,13 +35,13 @@
           v-for="(subject, i) in subjects"
           :key="i"
         >
-          <v-expansion-panel-header class="elevation-12">
+          <v-expansion-panel-header class="elevation-12 pa-3">
             <v-row
               align="center"
               class="spacer"
             >
               <v-col
-                cols="4"
+                cols="3"
                 sm="2"
                 md="2"
               >
@@ -60,15 +60,41 @@
               </v-col>
 
               <v-col
-                class="text-no-wrap"
-                cols="5"
-                md="3"
+                cols="4"
+                md="2"
+                sm="3"
               >
                 <strong v-html="subject.title"></strong>
+              </v-col>
+
+              <v-col
+                cols="4"
+                md="2"
+                sm="3"
+                align="center"
+              >
+                <v-chip
+                  color="secondary lighten-1"
+                  class="ml-1 mb-1 white--text"
+                  label
+                  small
+                  v-if="dateNow[0]-subject.createdAt.substring(8,10) + (dateNow[1]-subject.createdAt.substring(5,7))*30 + 365*(dateNow[2]-subject.createdAt.substring(0,4))!=0"
+                >
+                  {{ dateNow[0]-subject.createdAt.substring(8,10) + (dateNow[1]-subject.createdAt.substring(5,7))*30 + 365*(dateNow[2]-subject.createdAt.substring(0,4)) }} days ago
+                </v-chip>
+                <v-chip
+                  color="success lighten-1"
+                  class="ml-1 mb-1 white--text"
+                  label
+                  small
+                  v-else
+                >
+                  Today
+                </v-chip>
                 <v-chip
                   v-if="subject.comment.length > 0"
-                  color="primary"
-                  class="ml-2 white--text hidden-xs-only"
+                  color="primary lighten-1"
+                  class="ml-1 mb-1 white--text"
                   label
                   small
                 >
@@ -81,8 +107,8 @@
 
               <v-col
                 class="hidden-xs-only"
-                sm="5"
-                md="3"
+                sm="3"
+                align="center"
               >
                 <v-icon class="mr-2">mdi-account</v-icon>
                 <span v-if="subject.user==null" v-html="'anonymous'"></span>
@@ -105,7 +131,8 @@
             
           </v-expansion-panel-header>
           
-          <v-expansion-panel-content>
+          <v-expansion-panel-content
+          color="secondary lighten-4">
             
             <v-textarea
               rows="1"
@@ -169,13 +196,18 @@ export default {
       subjects: [],
       title: "",
       message: "",
-      successful: false
+      successful: false,
     };
   },
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
     },
+    
+    dateNow() {
+      const date = new Date();
+      return [date.getDate(), date.getMonth()+1, date.getFullYear()];
+    }
   },
 
   methods: {
