@@ -1,4 +1,10 @@
 # frontend
+npm install vue
+vue add router
+vue add vuex
+vue add vuetify
+npm install axios
+
 
 ## Project setup
 ```
