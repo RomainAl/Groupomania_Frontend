@@ -1,17 +1,18 @@
-# frontend
+# GROUPOMANIA FRONTEND
+# WITH VUE/VUEX/ROUTER/VUETIFY/AXIOS
+
+# SETUP
 ```
-npm install vue
-```
+npm install -g @vue/cli
 vue add router
-```
 vue add vuex
-```
 vue add vuetify
-```
 npm install axios
 ```
 
-
+```
+vue create Groupomania_Frontend
+```
 ## Project setup
 ```
 npm install
