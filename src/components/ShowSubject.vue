@@ -19,14 +19,16 @@
             <v-spacer></v-spacer>
 
             <v-btn
-              v-if= "currentSubject.user.username===currentUser.username" small @click="editSubject(currentSubject.id)"
+              v-if= "(currentSubject.user!=null)&&(currentSubject.user.username===currentUser.username)" 
+              small @click="editSubject(currentSubject.id)"
               color="white"
               icon
             >
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
             <v-btn
-              v-if= "(currentSubject.user.username===currentUser.username)||(currentUser.role === 'admin')" small @click="deleteSubject(currentSubject.id)"
+              v-if= "((currentSubject.user!=null)&&(currentSubject.user.username===currentUser.username))||(currentUser.role === 'admin')" 
+              small @click="deleteSubject(currentSubject.id)"
               color="white"
               icon
             >
@@ -40,8 +42,15 @@
                 mdi-account-circle
               </v-icon>
             </v-avatar>
-            <p class="ml-2 mt-4">
+            <p 
+              v-if="currentSubject.user!=null"
+              class="ml-2 mt-4">
               {{currentSubject.user.username}}
+            </p>
+            <p 
+              v-else
+              class="ml-2 mt-4">
+              Anonymous
             </p>
           </v-card-title>
 
@@ -71,7 +80,7 @@
             >
               <div>
                 <div class="font-weight-normal">
-                  <strong>{{ comment.userId }}</strong> @ {{ comment.updatedAt.substring(0,10) }} {{ comment.updatedAt.substring(11,13) }}h{{ comment.updatedAt.substring(14,16) }}min
+                  <strong>{{ comment.author }}</strong> @ {{ comment.updatedAt.substring(0,10) }} {{ comment.updatedAt.substring(11,13) }}h{{ comment.updatedAt.substring(14,16) }}min
                 </div>
                 <div>{{ comment.text }}</div>
                 <v-icon v-if= "comment.userId===currentUser.id" small class="mr-2" @click="getComment(comment.id)">mdi-pencil</v-icon>
@@ -139,6 +148,7 @@ export default {
       message: "",
       comment: {
         id: null,
+        author: "",
         subjectId: null,
         text: ""
       },
@@ -174,6 +184,7 @@ export default {
               console.log(response.data);
               this.comment.id = null;
               this.comment.text = "";
+              this.comment.author = "";
               this.refreshSubject(this.currentSubject.id);
               this.successful = true;
               this.$refs.form.reset();
@@ -189,7 +200,8 @@ export default {
         } else {
           var data = {
             subjectId: this.currentSubject.id,
-            text: this.comment.text
+            text: this.comment.text,
+            author: this.currentUser.username
           };
           CommentDataService.create(data)
             .then((response) => {
@@ -197,6 +209,7 @@ export default {
               console.log(response.data);
               this.comment.id = null;
               this.comment.text = "";
+              this.comment.author = "";
               this.refreshSubject(this.currentSubject.id);
               this.successful = true;
               this.$refs.form.reset();
@@ -233,15 +246,16 @@ export default {
     },
 
     getSubject(id) {
-      
       SubjectDataService.get(id)
         .then((response) => {
           this.currentSubject = response.data;
           console.log(response.data);
+          this.successful = true;
         })
         .catch((e) => {
           console.log(e);
           this.message = e.message;
+          this.successful = false;
         });
     },
 

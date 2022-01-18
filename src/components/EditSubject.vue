@@ -55,7 +55,6 @@
             v-model="currentSubject.text"
             :rules="[(v) => !!v || 'Text is required']"
             label="Text"
-            maxlength="255"
           ></v-textarea>
 
           <label><strong>Status:</strong></label>

@@ -19,9 +19,14 @@
         </v-data-table>
 
         
-        <v-alert  type="error" v-if="message">
-          {{message}}
-        </v-alert>
+        <v-card-text v-if="message">
+          <v-alert type="error" v-if="!successful">
+            {{message}}
+          </v-alert>
+          <v-alert type="success" v-else>
+            {{message}}
+          </v-alert>
+      </v-card-text>
       </v-card>
     </v-col>
   </v-row>
@@ -35,8 +40,13 @@ export default {
     return {
       users: [],
       username: "",
-      headers: [],
-      message: ''
+      message: '',
+      successful: false,
+      headers: [
+                  { text: "Username", align: "start", sortable: true, value: "username" },
+                  { text: "email", value: "email", sortable: true },
+                  { text: "Actions", value: "actions", sortable: false }
+                ]
     };
   },
   computed: {
@@ -70,23 +80,17 @@ export default {
       this.retrieveUsers();
     },
 
-    headersScreenDependance(){
-        this.headers = [
-                        { text: "Username", align: "start", sortable: true, value: "username" },
-                        { text: "email", value: "email", sortable: true },
-                        { text: "Actions", value: "actions", sortable: false },
-                      ]
-    },
-
     deleteUser(id) {
       UserDataService.delete(id)
         .then(() => {
           this.refreshList();
           this.message = "User deleted!";
+          this.successful = true;
         })
         .catch((e) => {
           console.log(e);
           this.message = "Impossible to delete the user!";
+          this.successful = false;
         });
     },
   },
@@ -94,7 +98,6 @@ export default {
   mounted() {
     this.message = "";
     this.retrieveUsers();
-    this.headersScreenDependance();
   },
 };
 </script>
