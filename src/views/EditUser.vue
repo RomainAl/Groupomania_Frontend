@@ -129,8 +129,11 @@
 </template>
 
 <script>
+//-------------------------
+// Composant/page "Edit d'un utilisateur" :
+//-------------------------
+// Charge les services axios pour accéder à l'API "users" du backend :
 import UserDataService from "../services/UserDataService";
-//import User from '../models/user';
 
 export default {
   name: "edit-user",
@@ -167,16 +170,21 @@ export default {
   },
 
   computed: {
+    // Charge les données de l'utilisateur stocké dans le store (vuex)
     currentUser() {
       return this.$store.state.auth.user;
     },
   },
 
   methods: {
+
+    // Renvoie vers la page profi
     showUser(){
       this.$router.push('/Profil');
     },
 
+    // Après validation du formulaire
+    // Met à jour les info utilisateur entré dans la base de donnée (backend)
     updateUserInfo() {
       
       this.$refs.form.validate();
@@ -213,6 +221,7 @@ export default {
       }
     },
 
+    // Efface l'utilisateur de la base de donnée (backend) et "logout"
     deleteUser() {
 
       UserDataService.delete(this.currentUser.id)
@@ -227,6 +236,7 @@ export default {
         
     },
 
+    // Déconnecte/efface tout et renvoie vers la page login
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
@@ -234,6 +244,7 @@ export default {
     }
 
   },
+  
   mounted() {
     this.message = "";
   },

@@ -101,9 +101,6 @@
                   {{ subject.comment.length }} comments
                 </v-chip>
               </v-col>
-              
-
-
 
               <v-col
                 class="hidden-xs-only"
@@ -187,6 +184,10 @@
 </template>
 
 <script>
+//-------------------------
+// Composant/page "FORUM" :
+//--------------------------
+// Charge les services axios pour accéder à l'API "subjects" du backend :
 import SubjectDataService from "../services/SubjectDataService";
 
 export default {
@@ -199,7 +200,9 @@ export default {
       successful: false,
     };
   },
+
   computed: {
+    // Charge les données de l'utilisateur stocké dans le store (vuex)
     currentUser() {
       return this.$store.state.auth.user;
     },
@@ -211,7 +214,7 @@ export default {
   },
 
   methods: {
-
+    // Charge tous les sujets existants dans notre base de donnée (backend)
     retrieveSubjects() {
       
       SubjectDataService.getAll()
@@ -232,6 +235,7 @@ export default {
       this.retrieveSubjects();
     },
 
+    // Charge les sujets "filtrés" de notre base de donnée (backend)
     searchTitle() {
       SubjectDataService.findByTitle(this.title)
         .then((response) => {
@@ -245,14 +249,17 @@ export default {
         });
     },
 
+    // Renvoie vers la page "edit" du sujet
     editSubject(id) {
       this.$router.push({ name: "edit-subject", params: { id: id } });
     },
 
+    // Renvoie vers la page "show" du sujet
     showSubject(id) {
       this.$router.push({ name: "show-subject", params: { id: id } });
     },
 
+    // Efface le sujet
     deleteSubject(id) {
       SubjectDataService.delete(id)
         .then(() => {
@@ -264,8 +271,10 @@ export default {
     },
   },
 
+  // charge les sujets dès que possible
   mounted() {
     this.retrieveSubjects();
+    this.message = "";
   },
 };
 </script>

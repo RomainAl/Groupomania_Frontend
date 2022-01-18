@@ -101,26 +101,35 @@
 </template>
 
 <script>
+//-------------------------
+// Composant/page du profil utilisateur :
+//--------------------------
+// Charge les services axios pour accéder à l'API "users" du backend :
 import UserDataService from "../services/UserDataService";
 
 export default {
   name: 'Profil',
   computed: {
+    // Charge les données de l'utilisateur stocké dans le store (vuex)
     currentUser() {
       return this.$store.state.auth.user;
     }
   },
+  // Si l'utilisateur n'existe pas (pas de token), on renvoie vers la page login
   mounted() {
     if (!this.currentUser) {
       this.$router.push('/login');
     }
+    this.message = "";
   },
 
   methods: {
+    // Renvoie vers la page "edit" de l'utilisateur
     editUser() {
       this.$router.push({ name: "edit-user", params: { id: this.currentUser.id } });
     },
 
+    // Efface l'utilisateur puis logout
     deleteUser() {
 
       UserDataService.delete(this.currentUser.id)
@@ -135,6 +144,7 @@ export default {
         
     },
 
+    // Dispatch l'action générale "logout" du store et retour à la page "login"
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');

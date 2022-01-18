@@ -86,6 +86,13 @@
 </template>
 
 <script>
+//-------------------------
+// Composant/page "Ajout d'un sujet" :
+//-------------------------
+// OPTIMISATION POSSIBLE (TODO):
+// Créer un composant "formulaire" que les page "add" et "edit" lanceraient
+//
+// Charge les services axios pour accéder à l'API "subjects" du backend :
 import SubjectDataService from "../services/SubjectDataService";
 
 export default {
@@ -103,8 +110,15 @@ export default {
       newSubjectId: 0
     };
   },
+
+  mounted(){
+    this.message = "";
+  },
+  
   methods: {
     
+    // Après validation du formulaire
+    // Enregistre le nouveau sujet dans la base de donnée (backend)
     saveSubject() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()){
@@ -134,12 +148,14 @@ export default {
 
     },
 
+    // Initialisation 
     newSubject() {
       this.subject = {};
       this.message ='';
       this.$refs.form.resetValidation();
     },
 
+    // Renvoie vers la page du nouveau sujet
     showSubject(id) {
       this.$router.push({ name: "show-subject", params: { id: id } });
     },

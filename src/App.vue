@@ -164,11 +164,14 @@
 </template>
 
 <script>
+//-------------------------
+// Application générale :
+// Affiche la barre header et gère le menu "responsif" et contextuel
+//--------------------------
 export default {
   data() {
     return {
       drawer: false,
-      valid: true,
     }
   },
 

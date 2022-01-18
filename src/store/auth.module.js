@@ -1,3 +1,7 @@
+//-------------------------
+// STORE VUEX :
+// 
+//-------------------------
 import AuthService from '../services/auth.service';
 
 const user = JSON.parse(localStorage.getItem('user'));
@@ -9,6 +13,8 @@ export const auth = {
   namespaced: true,
   state: initialState,
   actions: {
+    // Lance le service login de la class d'authentification et 
+    // lance les mutations des variables "logged" et "user" du store vuex
     login({ commit }, user) {
       return AuthService.login(user).then(
         user => {
@@ -21,10 +27,14 @@ export const auth = {
         }
       );
     },
+
+    // Lance le service logout
     logout({ commit }) {
       AuthService.logout();
       commit('logout');
     },
+
+    // Lance le service registrer + mutations
     register({ commit }, user) {
       return AuthService.register(user).then(
         response => {
@@ -38,6 +48,7 @@ export const auth = {
       );
     }
   },
+
   mutations: {
     loginSuccess(state, user) {
       state.status.loggedIn = true;

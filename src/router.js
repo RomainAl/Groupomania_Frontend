@@ -1,3 +1,7 @@
+//----------------------------------
+// Création du router (vue-router) permettant de donner
+// des chemins d'accès (url) à nos views/composants
+//----------------------------------
 import Vue from 'vue';
 import Router from 'vue-router';
 import Login from './views/Login.vue';
@@ -30,48 +34,33 @@ export const router = new Router({
       path: "/subjects",
       alias: "/subjects",
       name: "subjects",
-      component: () => import("./components/SubjectsList")
+      component: () => import("./views/SubjectsList")
     },
     {
       path: "/users",
       alias: "/users",
       name: "users",
-      component: () => import("./components/UsersList")
+      component: () => import("./views/UsersList")
     },
     {
       path: "/editsubjects/:id",
       name: "edit-subject",
-      component: () => import("./components/EditSubject")
+      component: () => import("./views/EditSubject")
     },
     {
       path: "/editusers/:id",
       name: "edit-user",
-      component: () => import("./components/EditUser")
+      component: () => import("./views/EditUser")
     },
     {
       path: "/add",
       name: "add",
-      component: () => import("./components/AddSubject")
+      component: () => import("./views/AddSubject")
     },
     {
       path: "/subjects/:id",
       name: "show-subject",
-      component: () => import("./components/ShowSubject")
+      component: () => import("./views/ShowSubject")
     }
   ]
 });
-
-// Check Authorized status everytime a navigating action is trigger :
-// router.beforeEach((to, from, next) => {
-//   const publicPages = ['/login', '/register', '/home'];
-//   const authRequired = !publicPages.includes(to.path);
-//   const loggedIn = localStorage.getItem('user');
-
-//   // trying to access a restricted page + not logged in
-//   // redirect to login page
-//   if (authRequired && !loggedIn) {
-//     next('/login');
-//   } else {
-//     next();
-//   }
-// });

@@ -94,6 +94,13 @@
 </template>
 
 <script>
+//-------------------------
+// Composant/page "Edit d'un sujet" :
+//-------------------------
+// OPTIMISATION POSSIBLE (TODO):
+// Créer un composant "formulaire" que les page "add" et "edit" lanceraient
+//
+// Charge les services axios pour accéder à l'API "subjects" du backend :
 import SubjectDataService from "../services/SubjectDataService";
 
 export default {
@@ -107,6 +114,8 @@ export default {
     };
   },
   methods: {
+
+    // Charge les données actuels du suject (backend)
     getSubject(id) {
       SubjectDataService.get(id)
         .then((response) => {
@@ -118,6 +127,7 @@ export default {
         });
     },
 
+    // met à jour le sujet modifié (backend)
     updateSubject() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()){
@@ -140,6 +150,7 @@ export default {
       }
     },
 
+    // Efface le sujet
     deleteSubject() {
       SubjectDataService.delete(this.currentSubject.id)
         .then((response) => {
@@ -151,10 +162,13 @@ export default {
         });
     },
 
+    // Renvoie vers la page du sujet modifié
     showSubject(id) {
       this.$router.push({ name: "show-subject", params: { id: id } });
     },
   },
+
+  // Charge le sujet du backend dès que possible
   mounted() {
     this.message = "";
     this.getSubject(this.$route.params.id);
@@ -163,8 +177,4 @@ export default {
 </script>
 
 <style>
-.edit-form {
-  max-width: 300px;
-  margin: auto;
-}
 </style>

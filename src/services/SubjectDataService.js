@@ -1,10 +1,16 @@
-import axios from 'axios';
-import authHeader from './auth-header';
+//-------------------------
+// Création de la class "service" des users
+// permettant la communication (axios) entre le 
+// frontend et le backend
+//-------------------------
+import axios from 'axios'; // Importe la library "axios"
+import authHeader from './auth-header'; // Importe les données utilisateurs du store (token)
 const http = axios.create({
   baseURL: "http://localhost:8080/api/subject",
   headers: authHeader()
 });
 
+// Création de la class aux méthodes accédantes à l'API :
 class SubjectDataService {
   getAll() {
     return http.get("/");
@@ -54,4 +60,5 @@ class SubjectDataService {
   }
 }
 
+// Exporte la class pour la rendre accessible aux pages/composant du site
 export default new SubjectDataService();

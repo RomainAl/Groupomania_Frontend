@@ -69,6 +69,9 @@
 </template>
 
 <script>
+//-------------------------
+// Composant/page de l'enregistrement :
+//--------------------------
 import User from '../models/user';
 
 export default {
@@ -94,19 +97,23 @@ export default {
   },
   
   computed: {
+    // du store vuex on vérifie si on est pas déjà logué
     loggedIn() {
       return this.$store.state.auth.status.loggedIn;
     }
   },
 
+  // Si oui l'utilisateur est renvoyé vers son profil au lieu de venir ici
   mounted() {
     if (this.loggedIn) {
       this.$router.push('/profil');
     }
+    this.message = "";
   },
   
   methods: {
-
+    // Validation du formulaire puis on dispatch l'action (store vuex) de login
+    // Si validation, l'utilisateur est renvoyé vers son profil
     handleRegister() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()){

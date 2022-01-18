@@ -1,7 +1,14 @@
+//-------------------------
+// Service permettant les communication des sécurité
+// entre le frontend (stocké localStorage)
+// et le backend (API)
+//-------------------------
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/auth/';
 
+// Class aux méthodes permettant le login/logout/enregistrement
+// écrivant/lisant directement sur la base de donnée (backend)
 class AuthService {
   login(user) {
     return axios
