@@ -1,3 +1,6 @@
+//-------------------------
+// Charge le token pour les headers de requête API
+//-------------------------
 export default function authHeader() {
   let user = JSON.parse(localStorage.getItem('user'));
 

@@ -137,6 +137,10 @@
 </template>
 
 <script>
+//-------------------------
+// Composant/page "Sujet" :
+//-------------------------
+// Charge les services axios pour accéder à l'API "subjects"  et "comments" du backend :
 import SubjectDataService from "../services/SubjectDataService";
 import CommentDataService from "../services/CommentDataService";
 
@@ -157,12 +161,51 @@ export default {
     };
   },
   computed: {
+    // Charge les données de l'utilisateur stocké dans le store (vuex)
     currentUser() {
       return this.$store.state.auth.user;
     },
   },
   methods: {
+    // SUJET ID :
+    // Charge le sujet id de la base de donnée (backend)
+    refreshSubject(id) {
+      this.getSubject(id);
+    },
 
+    getSubject(id) {
+      SubjectDataService.get(id)
+        .then((response) => {
+          this.currentSubject = response.data;
+          console.log(response.data);
+          this.successful = true;
+        })
+        .catch((e) => {
+          console.log(e);
+          this.message = e.message;
+          this.successful = false;
+        });
+    },
+
+    // Renvoi vers la page "edit" du sujet id
+    editSubject(id) {
+      this.$router.push({ name: "edit-subject", params: { id: id } });
+    },
+
+    // Efface le sujet id de la base de donnée (backend) et renvoi ver le forum 
+    deleteSubject() {
+      SubjectDataService.delete(this.currentSubject.id)
+        .then((response) => {
+          console.log(response.data);
+          this.$router.push({ name: "subjects" });
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+
+  // COMMENTAIRES :
+  // Charge le commentaire "id" de la base de donnée (backend)
     getComment(id) {
       CommentDataService.get(id)
         .then((response) => {
@@ -174,6 +217,7 @@ export default {
         });
     },
 
+    // Enregistre/modifie le commentaire dans la base de donnée (backend)
     saveComment() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()){
@@ -230,6 +274,7 @@ export default {
       }
     },
 
+    // Efface le commentaire "id"
     deleteComment(id) {
 
       CommentDataService.delete(id)
@@ -239,40 +284,7 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-    },
-
-    refreshSubject(id) {
-      this.getSubject(id);
-    },
-
-    getSubject(id) {
-      SubjectDataService.get(id)
-        .then((response) => {
-          this.currentSubject = response.data;
-          console.log(response.data);
-          this.successful = true;
-        })
-        .catch((e) => {
-          console.log(e);
-          this.message = e.message;
-          this.successful = false;
-        });
-    },
-
-    editSubject(id) {
-      this.$router.push({ name: "edit-subject", params: { id: id } });
-    },
-
-    deleteSubject() {
-      SubjectDataService.delete(this.currentSubject.id)
-        .then((response) => {
-          console.log(response.data);
-          this.$router.push({ name: "subjects" });
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
+    }
   },
   mounted() {
     this.message = "";

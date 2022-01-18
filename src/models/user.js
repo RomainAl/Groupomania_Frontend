@@ -1,3 +1,6 @@
+//-------------------------
+// Model User
+//-------------------------
 export default class User {
   constructor(username, email, password, firstname, lastname, phonenumber, role) {
     this.username = username;

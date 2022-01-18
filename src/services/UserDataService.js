@@ -1,5 +1,5 @@
 //-------------------------
-// Création de la class "service" des sujets
+// Création de la class "service" des users
 // permettant la communication (axios) entre le 
 // frontend et le backend
 //-------------------------
