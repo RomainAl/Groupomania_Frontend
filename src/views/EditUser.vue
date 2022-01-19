@@ -82,7 +82,7 @@
           >
             <v-icon>mdi-security</v-icon>
             <v-card-title class="text-h6 font-weight-regular">
-              Password
+              Current or new password
             </v-card-title>
           </v-toolbar>
 

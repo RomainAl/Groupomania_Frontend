@@ -3,58 +3,100 @@
     <v-row justify="space-around">
       <v-card
       width="700">
+
+        <v-toolbar
+          color="primary"
+          dark
+          flat
+        >
+          <v-toolbar-title class="text-h4 white--text pl-0">
+            <strong>{{currentSubject.title}}</strong>
+          </v-toolbar-title>
+
+          <v-spacer></v-spacer>
+
+          <v-btn
+            v-if= "(currentSubject.user!=null)&&(currentSubject.user.username===currentUser.username)" 
+            small @click="editSubject(currentSubject.id)"
+            color="white"
+            icon
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn
+            v-if= "((currentSubject.user!=null)&&(currentSubject.user.username===currentUser.username))||(currentUser.role === 'admin')" 
+            small @click="deleteSubject(currentSubject.id)"
+            color="white"
+            icon
+          >
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        
         <v-img
           height="200px"
-          src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg"
+          v-if = "currentSubject.imageUrl"
+          :src = currentSubject.imageUrl
+          :alt = currentSubject.title
         >
-          <v-app-bar
-            flat
-            color="rgba(0, 0, 0, 0)"
+
+          <v-dialog
+            v-model="showImage"
+            width = window.innerWidth
           >
+            <template v-slot:activator="{ on, attrs }">
+              <div
+                align="right">
+                  <v-btn
+                      color="primary"
+                      icon
+                      large
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                    <v-icon>mdi-arrow-expand</v-icon>
+                  </v-btn>
+                </div>      
+            </template>
 
-            <v-toolbar-title class="text-h4 white--text pl-0">
-              <strong>{{currentSubject.title}}</strong>
-            </v-toolbar-title>
-
-            <v-spacer></v-spacer>
-
-            <v-btn
-              v-if= "(currentSubject.user!=null)&&(currentSubject.user.username===currentUser.username)" 
-              small @click="editSubject(currentSubject.id)"
-              color="white"
-              icon
-            >
-              <v-icon>mdi-pencil</v-icon>
-            </v-btn>
-            <v-btn
-              v-if= "((currentSubject.user!=null)&&(currentSubject.user.username===currentUser.username))||(currentUser.role === 'admin')" 
-              small @click="deleteSubject(currentSubject.id)"
-              color="white"
-              icon
-            >
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </v-app-bar>
-
-          <v-card-title class="white--text mt-14">
-            <v-avatar>
-              <v-icon color="white">
-                mdi-account-circle
-              </v-icon>
-            </v-avatar>
-            <p 
-              v-if="currentSubject.user!=null"
-              class="ml-2 mt-4">
-              {{currentSubject.user.username}}
-            </p>
-            <p 
-              v-else
-              class="ml-2 mt-4">
-              Anonymous
-            </p>
-          </v-card-title>
-
+            <v-card>
+              <v-img
+                :src = currentSubject.imageUrl
+                :alt = currentSubject.title
+              >
+                <div
+                  align="right">
+                  <v-btn
+                    color="primary"
+                    @click="showImage = false"
+                    iconlarge
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </div>
+              </v-img>
+            </v-card>
+          </v-dialog>
         </v-img>
+
+        <v-card-title class="primary--text">
+            <v-avatar>
+            <v-icon color="primary">
+              mdi-account-circle
+            </v-icon>
+          </v-avatar>
+          <p 
+            v-if="currentSubject.user!=null"
+            class="ml-2 mt-4">
+            {{currentSubject.user.username}}
+          </p>
+          <p 
+            v-else
+            class="ml-2 mt-4">
+            Anonymous
+          </p>
+        </v-card-title>
 
         <v-card-subtitle>
              {{currentSubject.description}}
@@ -128,6 +170,9 @@
             <v-alert type="error" v-if="!successful">
               {{message}}
             </v-alert>
+            <v-alert type="success" v-if="successful">
+              {{message}}
+            </v-alert>
           </v-card-text>
 
         </v-container>
@@ -158,8 +203,10 @@ export default {
       },
       valid: true,
       successful: false,
+      showImage: false
     };
   },
+
   computed: {
     // Charge les données de l'utilisateur stocké dans le store (vuex)
     currentUser() {
@@ -287,8 +334,7 @@ export default {
     }
   },
   mounted() {
-    this.message = "";
-    this.getSubject(this.$route.params.id);
+    this.refreshSubject(this.$route.params.id);
   },
 };
 </script>

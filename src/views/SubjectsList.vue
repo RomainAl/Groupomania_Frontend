@@ -49,10 +49,10 @@
                   size="56px"
                 >
                   <img
-                    v-if="true"
-                    alt="Avatar"
-                    src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg"
-        >
+                    v-if="subject.imageUrl"
+                    :alt= subject.title
+                    :src = subject.imageUrl
+                  >
                   <v-icon
                     v-else>
                     mdi-message-image</v-icon>
@@ -131,12 +131,40 @@
           <v-expansion-panel-content
           color="secondary lighten-4">
             
-            <v-textarea
-              rows="1"
-              auto-grow
-              :value= "subject.text"
-              readonly
-              ></v-textarea>
+            <v-row
+              align-content="space-between"
+              v-if="subject.imageUrl"
+              >
+              <v-col cols="6">
+                <v-textarea
+                  rows="3"
+                  auto-grow
+                  :value= "subject.text"
+                  readonly
+                  ></v-textarea>
+              </v-col>
+ 
+              <v-col cols="6">
+                  <v-img
+                    :alt= subject.title
+                    :src = subject.imageUrl
+                    contain
+                  >
+                  </v-img>
+              </v-col>
+            </v-row>
+            <v-row
+              align-content="space-between"
+              v-else
+              >
+                <v-textarea
+                  rows="3"
+                  auto-grow
+                  :value= "subject.text"
+                  readonly
+                  ></v-textarea>
+            </v-row>
+
 
             <v-card-actions>
               <v-btn

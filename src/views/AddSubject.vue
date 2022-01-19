@@ -61,6 +61,21 @@
 
           <v-divider class="my-5"></v-divider>
 
+          <div>
+            <v-file-input
+              :rules="rules"
+              accept="image/png, image/jpeg, image/png"
+              placeholder="Pick an image"
+              prepend-icon="mdi-camera"
+              label="Picture"
+              ref="image"
+              @change="selectImage"
+              v-model="currentImage"
+            ></v-file-input>
+          </div>
+
+          <v-divider class="my-5"></v-divider>
+
           <v-btn 
           :disabled="!valid"
           color="primary" 
@@ -107,7 +122,11 @@ export default {
       successful: false,
       valid: true,
       message: '',
-      newSubjectId: 0
+      newSubjectId: 0,
+      currentImage: null,
+      rules: [
+        value => !value || value.size < 3000000 || 'Avatar size should be less than 3 MB!',
+      ],
     };
   },
 
@@ -116,7 +135,6 @@ export default {
   },
   
   methods: {
-    
     // Après validation du formulaire
     // Enregistre le nouveau sujet dans la base de donnée (backend)
     saveSubject() {
@@ -128,18 +146,36 @@ export default {
             text: this.subject.text,
           };
 
-          SubjectDataService.create(data)
-            .then((response) => {
-              console.log(response.data);
-              this.message = "The subject was updated successfully!";
-              this.newSubjectId = response.data.id;
-              this.successful = true;
-            })
-            .catch((e) => {
-              console.log(e);
-              this.message = e.message;
-              this.successful = false;
-            });
+            if (!this.currentImage){    
+              SubjectDataService.create(data)
+                .then((response) => {
+                  console.log(response.data);
+                  this.message = "The subject was updated successfully!";
+                  this.newSubjectId = response.data.id;
+                  this.successful = true;
+                })
+                .catch((e) => {
+                  console.log(e);
+                  this.message = e.message;
+                  this.successful = false;
+                });
+
+            } else {
+              SubjectDataService.createWithImage(this.currentImage, data, (event) => {
+                this.progress = Math.round((100 * event.loaded) / event.total);
+              })
+                .then((response) => {
+                  console.log(response.data);
+                  this.message = "The subject was updated successfully!";
+                  this.newSubjectId = response.data.id;
+                  this.successful = true;
+                })
+                .catch((e) => {
+                  console.log(e);
+                  this.message = e.message;
+                  this.successful = false;
+                });
+            }
 
       } else {
         this.successful = false;

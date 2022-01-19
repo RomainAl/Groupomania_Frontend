@@ -1,35 +1,54 @@
 <template>
-  <v-row align="center" class="list px-3 mx-auto">
+<v-container fluid>
+    <v-row 
+      justify="center"
+      >
 
-    <v-col cols="12" sm="12">
-      <v-card class="mx-auto" tile>
-        <v-card-title>Users</v-card-title>
-
-        <v-data-table
-          :headers="headers"
-          :items="users"
-          enable-pagination
-          :hide-default-footer="false"
-          @click:row="handleClick"
+      <v-toolbar
+          color="primary"
+          dark
+          flat
         >
-
-          <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small @click="deleteUser(item.id)">mdi-delete</v-icon>
-          </template>
-        </v-data-table>
-
         
-        <v-card-text v-if="message">
-          <v-alert type="error" v-if="!successful">
-            {{message}}
-          </v-alert>
-          <v-alert type="success" v-else>
-            {{message}}
-          </v-alert>
-      </v-card-text>
-      </v-card>
-    </v-col>
-  </v-row>
+          <v-card-title class="text-h6 font-weight-regular">
+            USER ADMINISTRATION
+          </v-card-title>
+        </v-toolbar>
+
+        <v-col cols="12" sm="12">
+          <v-card class="mx-auto" tile>
+
+            <v-data-table
+              :headers="headers"
+              :items="users"
+              enable-pagination
+              :hide-default-footer="false"
+              @click:row="handleClick"
+            >
+
+              <template v-slot:[`item.actions`]="{ item }">
+                <v-icon 
+                  v-if="item.role!='admin'"
+                  small 
+                  @click="deleteUser(item.id)">
+                  mdi-delete
+                </v-icon>
+              </template>
+            </v-data-table>
+
+            
+            <v-card-text v-if="message">
+              <v-alert type="error" v-if="!successful">
+                {{message}}
+              </v-alert>
+              <v-alert type="success" v-else>
+                {{message}}
+              </v-alert>
+          </v-card-text>
+          </v-card>
+        </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
