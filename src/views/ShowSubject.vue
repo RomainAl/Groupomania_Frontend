@@ -9,7 +9,7 @@
           dark
           flat
         >
-          <v-toolbar-title class="text-h4 white--text pl-0">
+          <v-toolbar-title class="text-h5 white--text pl-0">
             <strong>{{currentSubject.title}}</strong>
           </v-toolbar-title>
 
