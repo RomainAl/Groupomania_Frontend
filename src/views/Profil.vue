@@ -12,7 +12,7 @@
           >
 
             <v-toolbar-title class="text-h6 white--text pl-0">
-              {{currentUser.username}}
+              {{user.username}}
             </v-toolbar-title>
 
             <v-spacer></v-spacer>
@@ -45,10 +45,10 @@
               </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>{{currentUser.lastname}}</v-list-item-title>
+              <v-list-item-title>{{user.lastname}}</v-list-item-title>
             </v-list-item-content>
             <v-list-item-content>
-              <v-list-item-title>{{currentUser.firstname}}</v-list-item-title>
+              <v-list-item-title>{{user.firstname}}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
 
@@ -62,7 +62,7 @@
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title>+33 (0) {{currentUser.phonenumber}}</v-list-item-title>
+              <v-list-item-title>+33 (0) {{user.phonenumber.substring(1,10)}}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
 
@@ -76,7 +76,7 @@
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title>{{currentUser.email}}</v-list-item-title>
+              <v-list-item-title>{{user.email}}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
 
@@ -106,9 +106,17 @@
 //--------------------------
 // Charge les services axios pour accéder à l'API "users" du backend :
 import UserDataService from "../services/UserDataService";
+import User from '../models/user';
 
 export default {
   name: 'Profil',
+  data() {
+    return {
+      valid: true,
+      user: new User('', '', '', '', '', '', ''),
+    };
+  },
+
   computed: {
     // Charge les données de l'utilisateur stocké dans le store (vuex)
     currentUser() {
@@ -120,10 +128,30 @@ export default {
     if (!this.currentUser) {
       this.$router.push('/login');
     }
+    this.refreshUser(this.currentUser.id);
     this.message = "";
   },
 
   methods: {
+    refreshUser(id) {
+      this.getUser(id);
+    },
+
+    // Charge les données personnelles de l'utilisateur du backend
+    getUser(id) {
+      UserDataService.get(id)
+        .then((response) => {
+          this.user = response.data;
+          console.log(response.data);
+          this.successful = true;
+        })
+        .catch((e) => {
+          console.log(e);
+          this.message = e.message;
+          this.successful = false;
+        });
+    },
+
     // Renvoie vers la page "edit" de l'utilisateur
     editUser() {
       this.$router.push({ name: "edit-user", params: { id: this.currentUser.id } });

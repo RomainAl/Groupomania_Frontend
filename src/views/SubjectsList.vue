@@ -80,7 +80,7 @@
                   small
                   v-if="dateNow[0]-subject.createdAt.substring(8,10) + (dateNow[1]-subject.createdAt.substring(5,7))*30 + 365*(dateNow[2]-subject.createdAt.substring(0,4))!=0"
                 >
-                  {{ dateNow[0]-subject.createdAt.substring(8,10) + (dateNow[1]-subject.createdAt.substring(5,7))*30 + 365*(dateNow[2]-subject.createdAt.substring(0,4)) }} days ago
+                  {{ dateNow[0]-subject.createdAt.substring(8,10) + (dateNow[1]-subject.createdAt.substring(5,7))*30 + 365*(dateNow[2]-subject.createdAt.substring(0,4)) }} day(s) ago
                 </v-chip>
                 <v-chip
                   color="success lighten-1"

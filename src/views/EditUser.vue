@@ -113,7 +113,7 @@
         </v-form>
 
       </v-card-text>
-      
+ 
       <v-card-text v-if="message">
         <v-alert type="error" v-if="!successful">
           {{message}}
@@ -134,21 +134,14 @@
 //-------------------------
 // Charge les services axios pour accéder à l'API "users" du backend :
 import UserDataService from "../services/UserDataService";
+import User from '../models/user';
 
 export default {
   name: "edit-user",
   data() {
     return {
       valid: true,
-      user: {
-        username: this.$store.state.auth.user.username,
-        email: this.$store.state.auth.user.email,
-        firstname: this.$store.state.auth.user.firstname, 
-        lastname: this.$store.state.auth.user.lastname,
-        phonenumber: this.$store.state.auth.user.phonenumber,
-        password: ''},
-        
-      password: '',
+      user: new User('', '', '', '', '', '', ''),
       showpassword: false,
       successful: false,
       message: "",
@@ -162,7 +155,7 @@ export default {
             return pattern.test(value) || 'Invalid e-mail.'
           },
           phonenumber: value => {
-            const pattern = /^(?:(?:\+|00)33[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/
+            const pattern = /^\d{10}$/
             return pattern.test(value) || 'Phone number be 10 digits' 
           }
         }
@@ -178,7 +171,26 @@ export default {
 
   methods: {
 
-    // Renvoie vers la page profi
+    refreshUser(id) {
+      this.getUser(id);
+    },
+    // Charge les données personnelles de l'utilisateur du backend
+    getUser(id) {
+      UserDataService.get(id)
+        .then((response) => {
+          this.user = response.data;
+          this.user.password = '';
+          console.log(response.data);
+          this.successful = true;
+        })
+        .catch((e) => {
+          console.log(e);
+          this.message = e.message;
+          this.successful = false;
+        });
+    },
+    
+    // Renvoie vers la page profil
     showUser(){
       this.$router.push('/Profil');
     },
@@ -186,7 +198,6 @@ export default {
     // Après validation du formulaire
     // Met à jour les info utilisateur entré dans la base de donnée (backend)
     updateUserInfo() {
-      
       this.$refs.form.validate();
       if (this.$refs.form.validate()){
 
@@ -199,7 +210,6 @@ export default {
                   this.successful = true;
                 },
                 error => {
-                  this.loading = false;
                   this.message =
                     (error.response && error.response.data && error.response.data.message) ||
                     error.message ||
@@ -246,6 +256,10 @@ export default {
   },
   
   mounted() {
+    if (!this.currentUser) {
+      this.$router.push('/login');
+    }
+    this.refreshUser(this.currentUser.id);
     this.message = "";
   },
 };

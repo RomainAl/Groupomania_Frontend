@@ -4,18 +4,15 @@
 # SETUP
 ```
 npm install -g @vue/cli
+
+vue create Groupomania_Frontend
+
 vue add router
 vue add vuex
 vue add vuetify
 npm install axios
 ```
 
-```
-vue create Groupomania_Frontend
-```
-## Project setup
-```
-npm install
 ```
 
 ### Compiles and hot-reloads for development
